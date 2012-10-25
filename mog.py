@@ -7,10 +7,9 @@ import sys
 
 
 class MOG():
-    """Mixture of Gaussians learning class. 
-       Constructor"""
-    #class constructor accepts a 1d list of data
+    """Mixture of Gaussians learning class."""
     def __init__(self, mixes, data_in):
+    """Constructor accepts number of gaussians, and 1d list of data."""
         self.data = data_in
         self.gaussians = []
         self.gaussians.append(self.__initMeanStdDev())
@@ -34,6 +33,7 @@ class MOG():
         return [mean, stddev]
 
     def pprint(self):
+    """Pretty print the mean and std_dev found for each gaussian"""
         for i in range(len(self.gaussians)):
             print "Class " + str(i+1)
             print "Parameters learned"
@@ -47,14 +47,17 @@ class MOG():
         return ".".join([temp[0], temp[1][:d]])    
 
     def run(self,iterations):
+    """Run the algorithm for the specified number of iterations."""
         for i in range(iterations):
             self.step()
 
     def step(self):
+    """Perform one complete EM step."""
         expectations = self.E_Step()
         self.M_Step(expectations)
 
     def E_Step(self):
+    """Perform the E step, return expectations for each distrubution."""
         # nested list representing expectations for each distribution.
         expectations = []
         for x in self.data:
@@ -65,6 +68,7 @@ class MOG():
         return expectations
     
     def M_Step(self, expectations):
+    """Perform the M step on a list of expectations."""
         count = 0
         new_values = []
         #loop for gaussian
@@ -84,12 +88,14 @@ class MOG():
             count += 1 
         
     def normalize(self, vector):
+    """Normalize a vector."""
         scalar = 1.0 / sum(vector)
         return [scalar * i for i in vector]
 
 
     #compute the gaussian
     def Gaussian(self,x, parameters):
+    """Compute the value of a gaussian PDF given x, parameters."""
         (mean, stddev) = parameters 
         return (1/(stddev * math.sqrt(2*math.pi))) * math.e**(-.5 * ((x-mean)/stddev)**2)
 
